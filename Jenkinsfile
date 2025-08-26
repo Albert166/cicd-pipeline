@@ -4,9 +4,9 @@ def appTag
 
 pipeline {
     agent any
-    
+
     stages {
-        stage('Checkout') {
+        stage('Initialize Environment') {
             steps {
                 script {
                     if (env.BRANCH_NAME == 'main') {
@@ -16,22 +16,27 @@ pipeline {
                         appName = "nodedev"
                         appPort = 3001
                     }
-                    appTag = appName + ":" + "v1.0"
+                    appTag = "${appName}:v1.0"
                 }
+            }
+        }
+
+        stage('Checkout') {
+            steps {
                 checkout scm
             }
         }
-        
+
         stage('Build') {
             steps {
-                sh './scripts/build.sh'
-            
+                sh 'npm install'
+                sh 'npm run build'
             }
         }
 
         stage('Test') {
             steps {
-                sh './scripts/test.sh'
+                sh 'npm test'
             }
         }
 
@@ -43,8 +48,8 @@ pipeline {
 
         stage('Deploy') {
             steps {
-                sh "docker container stop $(docker container ls -q --filter ancestor=${appTag}) || true"
-                sh "docker container rm $(docker container ls -q -a --filter ancestor=${appTag}) || true"
+                sh "docker container stop \$(docker container ls -q --filter ancestor=${appTag}) || true"
+                sh "docker container rm \$(docker container ls -q -a --filter ancestor=${appTag}) || true"
                 sh "docker run -d -p ${appPort}:3000 --name ${appName} ${appTag}"
             }
         }
