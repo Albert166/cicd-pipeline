@@ -2,7 +2,7 @@
 def appPort
 def appName
 def appTag
-def dockerRepo = "your-dockerhub-username" // <-- CHANGE THIS TO YOUR DOCKER HUB USERNAME
+def dockerRepo = "albertasm" // <-- CHANGE THIS TO YOUR DOCKER HUB USERNAME
 
 pipeline {
     agent any
