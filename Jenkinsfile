@@ -24,28 +24,28 @@ pipeline {
         
         stage('Build') {
             steps {
-                sh 'npm install'
-                sh 'npm run build'
+                sh './scripts/build.sh'
+            
             }
         }
 
         stage('Test') {
             steps {
-                sh 'npm test'
+                sh './scripts/test.sh'
             }
         }
 
         stage('Build Docker Image') {
             steps {
-                sh 'docker build -t ${appTag} .'
+                sh "docker build -t ${appTag} ."
             }
         }
 
         stage('Deploy') {
             steps {
-                sh 'docker container stop $(docker container ls -q --filter ancestor=${appTag}) || true'
-                sh 'docker container rm $(docker container ls -q -a --filter ancestor=${appTag}) || true'
-                sh 'docker run -d -p ${appPort}:3000 --name ${appName} ${appTag}'
+                sh "docker container stop $(docker container ls -q --filter ancestor=${appTag}) || true"
+                sh "docker container rm $(docker container ls -q -a --filter ancestor=${appTag}) || true"
+                sh "docker run -d -p ${appPort}:3000 --name ${appName} ${appTag}"
             }
         }
     }
