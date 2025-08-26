@@ -43,9 +43,9 @@ pipeline {
 
         stage('Deploy') {
             steps {
-                sh 'docker container stop $(docker container ls -q --filter ancestor=${appTag}) || true'
-                sh 'docker container rm $(docker container ls -q -a --filter ancestor=${appTag}) || true'
-                sh 'docker run -d -p ${appPort}:3000 --name ${appName} ${appTag}'
+                sh "docker container stop $(docker container ls -q --filter ancestor=${appTag}) || true"
+                sh "docker container rm $(docker container ls -q -a --filter ancestor=${appTag}) || true"
+                sh "docker run -d -p ${appPort}:3000 --name ${appName} ${appTag}"
             }
         }
     }
